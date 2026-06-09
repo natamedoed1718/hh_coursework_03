@@ -1,7 +1,8 @@
-import psycopg2
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import os
+
+import psycopg2
 from dotenv import load_dotenv
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 load_dotenv()
 
@@ -9,7 +10,7 @@ load_dotenv()
 class DBCreator:
     """Создание базы данных и таблиц."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.db_name = os.getenv("DB_NAME")
         self.user = os.getenv("DB_USER")
         self.password = os.getenv("DB_PASSWORD")

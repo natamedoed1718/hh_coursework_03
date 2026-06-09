@@ -1,54 +1,43 @@
 """Вспомогательные функции для загрузки данных в БД."""
 
+from typing import Dict, Any, List
 import psycopg2
 from src.api_client import HHAPIClient
+from psycopg2.extensions import cursor as Cursor
 
-
-def save_employer_to_db(cur, employer_data: dict) -> None:
-    """Сохраняет данные работодателя в таблицу employers."""
-    cur.execute(
-        """
+def save_employer_to_db(cur: psycopg2.extensions.cursor, employer_data: Dict[str, Any]) -> None:
+    cur.execute("""
         INSERT INTO employers (employer_id, company_name, site_url, description)
         VALUES (%s, %s, %s, %s)
         ON CONFLICT (employer_id) DO NOTHING;
-    """,
-        (
-            employer_data["id"],
-            employer_data.get("name"),
-            employer_data.get("site_url"),
-            employer_data.get("description"),
-        ),
-    )
+    """, (
+        employer_data['id'],
+        employer_data.get('name'),
+        employer_data.get('site_url'),
+        employer_data.get('description')
+    ))
 
-
-def save_vacancies_to_db(cur, employer_id: int, vacancies: list) -> None:
-    """Сохраняет список вакансий работодателя в таблицу vacancies."""
+def save_vacancies_to_db(cur: Cursor, employer_id: int, vacancies: List[Dict[str, Any]]) -> None:
     for vac in vacancies:
-        salary = vac.get("salary")
-        salary_from = salary.get("from") if salary else None
-        salary_to = salary.get("to") if salary else None
-        currency = salary.get("currency") if salary else None
-        cur.execute(
-            """
-            INSERT INTO vacancies (vacancy_id, employer_id, title, salary_from, salary_to, currency, url, requirement, responsibility)
+        salary = vac.get('salary')
+        salary_from = salary.get('from') if salary else None
+        salary_to = salary.get('to') if salary else None
+        currency = salary.get('currency') if salary else None
+        cur.execute("""
+            INSERT INTO vacancies
+            (vacancy_id, employer_id, title, salary_from, salary_to, currency, url, requirement, responsibility)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT (vacancy_id) DO NOTHING;
-        """,
-            (
-                vac.get("id"),
-                employer_id,
-                vac.get("name"),
-                salary_from,
-                salary_to,
-                currency,
-                vac.get("alternate_url"),
-                vac.get("snippet", {}).get("requirement"),
-                vac.get("snippet", {}).get("responsibility"),
-            ),
-        )
+        """, (
+            vac.get('id'), employer_id, vac.get('name'),
+            salary_from, salary_to, currency,
+            vac.get('alternate_url'),
+            vac.get('snippet', {}).get('requirement'),
+            vac.get('snippet', {}).get('responsibility')
+        ))
 
 
-def load_all_data(db_creator, employers_ids: list) -> None:
+def load_all_data(db_creator: Any, employers_ids: List[int]) -> None:
     """Основная функция загрузки данных обо всех работодателях и вакансиях."""
     client = HHAPIClient()
     conn = psycopg2.connect(
