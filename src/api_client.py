@@ -19,3 +19,4 @@ class HHAPIClient:
         data = response.json()
         items = data.get("items", [])
         return cast(List[Dict[str, Any]], items)
+pass
