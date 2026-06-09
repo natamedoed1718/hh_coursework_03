@@ -66,3 +66,5 @@ class DBCreator:
                     );
                 """)
             conn.commit()
+
+
