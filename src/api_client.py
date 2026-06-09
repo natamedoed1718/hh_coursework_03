@@ -1,6 +1,7 @@
 import requests
 from typing import List, Dict, Any
 
+
 class HHAPIClient:
     """Клиент для работы с API hh.ru."""
 
@@ -13,7 +14,9 @@ class HHAPIClient:
         response.raise_for_status()
         return response.json()
 
-    def get_vacancies_by_employer(self, employer_id: int, per_page: int = 100) -> List[Dict]:
+    def get_vacancies_by_employer(
+        self, employer_id: int, per_page: int = 100
+    ) -> List[Dict]:
         """Получить вакансии компании."""
         url = f"{self.BASE_URL}/vacancies"
         params = {"employer_id": employer_id, "per_page": per_page}

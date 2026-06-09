@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class DBManager:
     """Класс для работы с БД (методы по ТЗ)."""
 
@@ -16,8 +17,13 @@ class DBManager:
         self.port = os.getenv("DB_PORT")
 
     def _get_connection(self):
-        return psycopg2.connect(dbname=self.db_name, user=self.user,
-                                password=self.password, host=self.host, port=self.port)
+        return psycopg2.connect(
+            dbname=self.db_name,
+            user=self.user,
+            password=self.password,
+            host=self.host,
+            port=self.port,
+        )
 
     def get_companies_and_vacancies_count(self) -> List[Tuple[str, int]]:
         """Список компаний и количество вакансий у каждой."""

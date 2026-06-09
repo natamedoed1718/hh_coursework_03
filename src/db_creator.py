@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
 class DBCreator:
     """Создание базы данных и таблиц."""
 
@@ -17,8 +18,13 @@ class DBCreator:
 
     def create_database(self) -> None:
         """Создаёт БД, если она не существует."""
-        conn = psycopg2.connect(dbname="postgres", user=self.user,
-                                password=self.password, host=self.host, port=self.port)
+        conn = psycopg2.connect(
+            dbname="postgres",
+            user=self.user,
+            password=self.password,
+            host=self.host,
+            port=self.port,
+        )
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = conn.cursor()
         cur.execute(f"SELECT 1 FROM pg_database WHERE datname='{self.db_name}'")
@@ -29,8 +35,13 @@ class DBCreator:
 
     def create_tables(self) -> None:
         """Создаёт таблицы employers и vacancies."""
-        with psycopg2.connect(dbname=self.db_name, user=self.user,
-                              password=self.password, host=self.host, port=self.port) as conn:
+        with psycopg2.connect(
+            dbname=self.db_name,
+            user=self.user,
+            password=self.password,
+            host=self.host,
+            port=self.port,
+        ) as conn:
             with conn.cursor() as cur:
                 cur.execute("""
                     CREATE TABLE IF NOT EXISTS employers (
@@ -54,4 +65,3 @@ class DBCreator:
                     );
                 """)
             conn.commit()
-
